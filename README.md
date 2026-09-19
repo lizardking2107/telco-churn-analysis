@@ -1,30 +1,33 @@
 # Telco Customer Churn Analysis
 
-End-to-end churn analysis on the [Telco Customer Churn dataset](https://www.kaggle.com/datasets/blastchar/telco-customer-churn) (Kaggle) — from raw data to a business-ready retention strategy.
+In this project I analyzed the customers of a telecom company and tried to find out why they leave and what the company can do about it. The data is taken from Kaggle. 
 
 ## Project Goal
 The main goal of the project is to analyze the customers' base of Telco and identify what kind of factors motivate the clients to churn. Moreover we focus on what business can do about it. To conduct the research I combined several approaches: SQL, statistical testing, logistic regression and data visualization. They turned into one coherent analysis rather than stopping at one analytical metric.
 
 ## Pipeline
 
-1. **EDA** — data validation, hidden missing values (`TotalCharges` stored as whitespace strings for new customers), category consistency checks.
-2. **SQL** — churn rate by segment (contract type, payment method, tenure bracket) via SQLite, including window functions for risk ranking and share-of-base sizing.
-3. **Visualization** — class balance, churn rate by segment, correlation structure among numeric features.
-4. **Statistical testing** — Levene's test + Welch's t-test (tenure, MonthlyCharges by churn), chi-square (Contract, PaymentMethod vs churn).
-5. **Modeling** — logistic regression (`statsmodels`), including a VIF-based multicollinearity diagnosis and fix, evaluated via ROC-AUC, precision/recall, and confusion matrix (not just accuracy, given ~27% class imbalance).
+1. First, I checked the data quality. The `TotalCharges` column was stored as text, and 11 new customers had a blank space instead of a number, so I filled it with 0.
+2. Then I loaded the data into SQLite and calculated the churn rate for different groups of customers (contract type, payment method, tenure).
+3. After that I built several charts to see the class balance and the differences between the groups.
+4. Then I tested the differences with Levene's test, Welch's t-test and chi-square.
+5. In the end I built a logistic regression. It turned out that some variables were too correlated with each other, so I checked it with VIF and removed `MonthlyCharges`.
 
 ## Key Findings
 
-- **Contract type is the main churn driver.** The churn rate of the customers with monthly subscriptions is at 42.7%, vs. 11.3% (one-year) and 2.8% (two-year). A two-year contract reduces churn odds by ~76% relative to month-to-month (according to the logistic regression).
-- **Tenure also defines the churn rates.** Churn is 47.7% for customers under 12 months, dropping to 9.5% for 4+ year customers.
-- **Electronic check payers churn at 45.3%**, roughly 3x the rate of automatic payment methods. It may be explained by the fact that electronic checks are paid manually, while the automatic payment methods are not controlled by the clients.
-- **Fiber optic customers churn more than DSL**, even after controlling for other factors (odds ratio is about 1.95). I assume that the main reason for that is the cost (the average monthly charge for fiber optic clients is 91.5 vs 58.1 (DSL)).
-- **Additional services reduce churn.** Customers with OnlineSecurity, TechSupport or OnlineBackup have significantly lower churn odds. In the first model this effect was not visible, because `MonthlyCharges` was strongly correlated with the service and internet features (VIF up to 872). After I removed `MonthlyCharges`, the VIF dropped below 11 and the effect became clear.
+The most important factor is the contract type. The churn rate of the customers with monthly contracts is 42.7%, while for one-year and two-year contracts it is 11.3% and 2.8%. According to the regression, a two-year contract reduces the odds of churn by about 76%.
+
+Tenure also matters. Customers who have been with the company less than a year leave in 47.7% of cases, and for those who stay 4+ years it is only 9.5%.
+
+Customers who pay by electronic check churn at 45.3%, which is much more than for automatic payments. It may be because electronic checks are paid manually every time, so it is easier to stop paying.
+
+Fiber optic customers leave more often than DSL customers (odds ratio is about 1.95). I assume the reason is the price: the average monthly charge is 91.5 for fiber optic and 58.1 for DSL.
+
+Additional services (OnlineSecurity, TechSupport, OnlineBackup) are connected with lower churn. In the first model I could not see it, because `MonthlyCharges` was too correlated with these variables (VIF up to 872). After I removed it, the effect became visible.
 
 ## Model Performance
 
-- ROC-AUC: 0.84
-- Recall (churn class): 0.55 — the model catches just over half of actual churners at the default 0.5 threshold, which matters for how a retention campaign built on these predictions would be sized.
+The ROC-AUC of the model is 0.84. The recall for the churn class is 0.55, so the model finds a bit more than half of the customers who really left (with the standard threshold 0.5). If the threshold is lowered to 0.3, the recall grows to 0.78, but more customers are marked as churn by mistake.
 
 ## Business Recommendations
 
