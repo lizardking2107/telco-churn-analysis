@@ -27,13 +27,18 @@ Additional services (OnlineSecurity, TechSupport, OnlineBackup) are connected wi
 
 ## Model Performance
 
-The ROC-AUC of the model is 0.84. The recall for the churn class is 0.55, so the model finds a bit more than half of the customers who really left (with the standard threshold 0.5). If the threshold is lowered to 0.3, the recall grows to 0.78, but more customers are marked as churn by mistake.
+The ROC-AUC of the model is 0.84. The recall for the churn class is 0.55, so the model finds a bit more than half of the customers who really left (with the standard threshold 0.5). If the threshold is lowered to 0.3, the recall grows to 0.78, but more customers are marked as churn by mistake. Moreover, the best threshold depends on the cost of the offer and on how often it works, so it should be chosen after a real pilot test.
+  
+## Business Impact
+
+About 30% of the monthly revenue is lost due to the churn. 'fiber optic' + 'Month-to-Month' group is only the 30% of the customers, but it makes up about 62% of the churned customers and gives around 72% of the lost revenue. 
+Also if the company reduced the churn rate of the 'Fiber Optic' + 'Month-to-Month' group by 10 percentage points, it would manage to keep about 213 customers and 220 k currency units. This scenario is illustrative, so a real pilot test is needed.
 
 ## Business Recommendations
 
 - The company should persuade month-to-month customers toward longer contracts (the single largest lever). Potential practical solution: the company may offer a discount for signing 1+ year contract.
 - Prioritize retention efforts in the first 12 months of the customer lifecycle. Potential practical solution: the clients should be offered special tariffs (more beneficial ratio of the utility to the price). 
-- Investigate the Fiber optic churn gap — pricing competitiveness vs. service quality. Probably the fiber optic is not proportional to the amount of money paid. 
+- Investigate the Fiber optic churn gap, pricing competitiveness vs. service quality. Probably the fiber optic is not proportional to the amount of money paid. 
 - Encourage a shift away from electronic check toward automatic payment methods. Potential practical solution: encourage the customers by offering them a small one-time bonus for enabling autopay (for example ApplePay) and make it a default option even when the customer renews or signs up.
 - Position security/support add-ons as retention tools, not just as additional revenue from sales. Potential practical solution: offer to at-risk clients a free trial period of those services.
 
